@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import anthropic, { SYSTEM_PROMPT_STATS } from '@/lib/anthropic'

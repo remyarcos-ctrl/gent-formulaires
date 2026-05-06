@@ -1,4 +1,5 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false
+  "rewrites": [
+    { "source": "/pv_chantier", "destination": "/pv_chantier.html" }
+  ]
 }

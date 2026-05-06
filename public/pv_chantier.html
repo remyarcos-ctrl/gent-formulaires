@@ -435,7 +435,7 @@ async function submitJotform() {
 
 // ── BOOT ──
 document.getElementById('sendBtn').onclick = () => { const v=inpEl.value.trim(); if(v&&!busy) send(v); };
-inpEl.addEventListener('keydown', e => { if(e.key==='Enter'){ const v=inpEl.value.trim(); if(v&&!busy) send(v); } });
+inpEl.addEventListener('keydown', e => { if(e.key==='Enter'){ e.preventDefault(); const v=inpEl.value.trim(); if(v&&!busy) send(v); } });
 
 // Start conversation
 send('Bonjour');

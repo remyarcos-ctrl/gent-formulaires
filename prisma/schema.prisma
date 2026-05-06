@@ -8,25 +8,93 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+model Technicien {
+  id         String   @id @default(cuid())
+  nom        String
+  telephone  String
+  email      String?
+  actif      Boolean  @default(true)
+  deals      Deal[]
+  created_at DateTime @default(now())
+
+  @@map("techniciens")
+}
+
+model Deal {
+  id                     String        @id @default(cuid())
+  statut                 String        @default("nouveau")
+  commercial_nom         String?
+  client_nom             String?
+  client_prenom          String?
+  client_email           String?
+  client_telephone       String?
+  client_adresse         String?
+  client_ville           String?
+  client_cp              String?
+  client_date_naissance  String?
+  client_nb_foyer        Int?
+  produits               String[]      @default([])
+  date_vente             DateTime?
+  date_vt_souhaitee      DateTime?
+  date_chantier_souhaite DateTime?
+  reserves               Boolean       @default(false)
+  reserves_details       String?
+  aides                  Json?
+  finances               Json?
+  specs_techniques       Json?
+  conversation           Json?
+  technicien_id          String?
+  technicien             Technicien?   @relation(fields: [technicien_id], references: [id])
+  intervention           Intervention?
+  pv_reception           PvReception?
+  created_at             DateTime      @default(now())
+  updated_at             DateTime      @updatedAt
+
+  @@map("deals")
+}
+
 model Intervention {
-  id                   String   @id @default(cuid())
-  technicien           String
-  client_nom           String
-  client_email         String?
-  client_telephone     String?
-  type_chantier        String
-  date                 DateTime @default(now())
-  adresse              String
-  statut               String   @default("en_cours")
-  reserves             String?
-  photos_urls          String[] @default([])
-  signature_client_url String?
-  signature_tech_url   String?
+  id                    String       @id @default(cuid())
+  deal_id               String?      @unique
+  deal                  Deal?        @relation(fields: [deal_id], references: [id])
+  technicien            String
+  client_nom            String
+  client_email          String?
+  client_telephone      String?
+  type_chantier         String
+  date                  DateTime     @default(now())
+  adresse               String
+  statut                String       @default("en_cours")
+  reserves              String?
+  photos_urls           String[]     @default([])
+  signature_client_url  String?
+  signature_tech_url    String?
   jotform_submission_id String?
-  notes_ia             String?
-  duree_minutes        Int?
-  created_at           DateTime @default(now())
-  updated_at           DateTime @updatedAt
+  notes_ia              String?
+  duree_minutes         Int?
+  conversation          Json?
+  created_at            DateTime     @default(now())
+  updated_at            DateTime     @updatedAt
+  pv_reception          PvReception?
 
   @@map("interventions")
+}
+
+model PvReception {
+  id                   String        @id @default(cuid())
+  deal_id              String?       @unique
+  deal                 Deal?         @relation(fields: [deal_id], references: [id])
+  intervention_id      String?       @unique
+  intervention         Intervention? @relation(fields: [intervention_id], references: [id])
+  statut               String        @default("en_attente")
+  observations         String?
+  reserves             String?
+  signature_tech_url   String?
+  signature_client_url String?
+  pdf_url              String?
+  conversation         Json?
+  created_at           DateTime      @default(now())
+  updated_at           DateTime      @updatedAt
+
+  @@map("pv_reception")
 }

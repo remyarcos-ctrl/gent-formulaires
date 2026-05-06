@@ -7,7 +7,7 @@ export default function AdminLayout({ children }) {
   const auth = cookieStore.get('hc_admin_auth')
 
   if (!auth || auth.value !== 'authenticated') {
-    redirect('/admin/login')
+    redirect('/login')
   }
 
   return (

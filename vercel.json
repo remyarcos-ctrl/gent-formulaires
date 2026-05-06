@@ -1,4 +1,5 @@
 {
+  "framework": null,
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/pv_chantier", "destination": "/pv_chantier.html" }

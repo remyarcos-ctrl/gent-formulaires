@@ -21,7 +21,16 @@ async function getStats() {
 }
 
 export default async function DashboardStats() {
-  const stats = await getStats()
+  let stats
+  try {
+    stats = await getStats()
+  } catch {
+    return (
+      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-sm text-amber-300">
+        ⚠️ Base de données non configurée — ajoutez <code className="text-amber-200">DATABASE_URL</code> dans les variables d'environnement Vercel puis redéployez.
+      </div>
+    )
+  }
   const reserveRate = stats.monthCount > 0 ? Math.round((stats.withReserves / stats.monthCount) * 100) : 0
 
   const cards = [

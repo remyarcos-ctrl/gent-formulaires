@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Intervention {
+  id                   String   @id @default(cuid())
+  technicien           String
+  client_nom           String
+  client_email         String?
+  client_telephone     String?
+  type_chantier        String
+  date                 DateTime @default(now())
+  adresse              String
+  statut               String   @default("en_cours")
+  reserves             String?
+  photos_urls          String[] @default([])
+  signature_client_url String?
+  signature_tech_url   String?
+  jotform_submission_id String?
+  notes_ia             String?
+  duree_minutes        Int?
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+
+  @@map("interventions")
+}

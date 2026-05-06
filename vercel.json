@@ -1,6 +1,6 @@
 {
-  "framework": null,
-  "outputDirectory": "public",
+  "framework": "nextjs",
+  "buildCommand": "prisma generate && next build",
   "rewrites": [
     { "source": "/pv_chantier", "destination": "/pv_chantier.html" }
   ]

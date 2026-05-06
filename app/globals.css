@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0a0f1e;
+    --bg-secondary: #0d1526;
+    --bg-card: #111827;
+    --border: #1e2d45;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --accent: #0ea5e9;
+    --accent-glow: rgba(14, 165, 233, 0.2);
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+  }
+
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-gray-900 border border-gray-800 rounded-xl p-4;
+  }
+  .btn-primary {
+    @apply bg-sky-600 hover:bg-sky-500 text-white font-medium px-4 py-2 rounded-lg transition-colors;
+  }
+  .btn-ghost {
+    @apply bg-transparent hover:bg-gray-800 text-gray-300 hover:text-white border border-gray-700 px-4 py-2 rounded-lg transition-colors;
+  }
+  .badge {
+    @apply text-xs font-semibold px-2 py-0.5 rounded-full;
+  }
+  .badge-success {
+    @apply badge bg-emerald-500/20 text-emerald-400;
+  }
+  .badge-warning {
+    @apply badge bg-amber-500/20 text-amber-400;
+  }
+  .badge-danger {
+    @apply badge bg-red-500/20 text-red-400;
+  }
+  .badge-info {
+    @apply badge bg-sky-500/20 text-sky-400;
+  }
+  .input {
+    @apply bg-gray-800 border border-gray-700 text-white placeholder-gray-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/50 w-full;
+  }
+}

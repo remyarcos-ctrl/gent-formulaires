@@ -6,308 +6,86 @@
 <meta name="theme-color" content="#0d1117">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>PV Réception Chantier</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
 :root {
-  --bg: #0d1117;
-  --card: #161b22;
-  --card2: #1c2128;
-  --border: #30363d;
-  --text: #f0f3f6;
-  --muted: #7d8590;
-  --accent: #2ea043;
-  --accent2: #3fb950;
-  --accent-glow: rgba(46,160,67,0.2);
-  --blue: #1f6feb;
-  --blue-glow: rgba(31,111,235,0.2);
-  --warn: #d29922;
-  --danger: #f85149;
-  --user-bubble: #1f6feb;
-  --agent-bubble: #161b22;
-  --r: 14px;
-  --rs: 10px;
+  --bg: #0d1117; --card: #161b22; --card2: #1c2128; --border: #30363d;
+  --text: #f0f3f6; --muted: #7d8590; --green: #2ea043; --green-glow: rgba(46,160,67,0.2);
+  --blue: #1f6feb; --blue-glow: rgba(31,111,235,0.2); --danger: #f85149;
+  --r: 14px; --rs: 10px;
 }
-
 html, body { height: 100%; overflow: hidden; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100dvh; }
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-}
-
-/* ── HEADER ── */
-.hdr {
-  padding: 12px 16px;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.hdr-icon {
-  width: 36px; height: 36px;
-  background: var(--accent);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-  box-shadow: 0 0 16px var(--accent-glow);
-  flex-shrink: 0;
-}
-
+.hdr { padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.hdr-icon { width: 36px; height: 36px; background: var(--green); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; box-shadow: 0 0 14px var(--green-glow); flex-shrink: 0; }
 .hdr-text { flex: 1; min-width: 0; }
-.hdr-text h1 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: -0.2px; }
+.hdr-text h1 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
 .hdr-text p { font-size: 11px; color: var(--muted); margin-top: 1px; }
-
-.hdr-prog { display: flex; align-items: center; gap: 8px; }
+.hdr-right { display: flex; align-items: center; gap: 8px; }
 .prog-track { width: 52px; height: 4px; background: var(--card2); border-radius: 2px; overflow: hidden; }
-.prog-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .5s ease; width: 0%; }
-.prog-pct { font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 28px; text-align: right; }
+.prog-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width .5s ease; width: 0%; }
+.prog-pct { font-size: 10px; color: var(--muted); min-width: 28px; text-align: right; }
 
-/* ── CHAT ── */
-.chat {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 16px 14px 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
+.chat { flex: 1; overflow-y: auto; padding: 16px 14px 8px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
 .chat::-webkit-scrollbar { width: 3px; }
 .chat::-webkit-scrollbar-thumb { background: var(--border); }
 
-/* ── MESSAGES ── */
-.row { display: flex; flex-direction: column; animation: fadeUp .3s ease; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
+.row { display: flex; flex-direction: column; animation: up .3s ease; }
+@keyframes up { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 .row.agent { align-items: flex-start; }
 .row.user  { align-items: flex-end; }
-
 .lbl { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .7px; color: var(--muted); margin-bottom: 4px; }
+.row.user .lbl { text-align: right; }
+.bubble { padding: 11px 15px; border-radius: var(--r); font-size: 14px; line-height: 1.6; max-width: 86vw; white-space: pre-wrap; word-break: break-word; }
+.row.agent .bubble { background: var(--card); border: 1px solid var(--border); border-bottom-left-radius: 3px; }
+.row.user  .bubble { background: var(--blue); color: #fff; border-bottom-right-radius: 3px; }
 
-.bubble {
-  padding: 11px 15px;
-  border-radius: var(--r);
-  font-size: 14px;
-  line-height: 1.55;
-  max-width: 86vw;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-.row.agent .bubble { background: var(--agent-bubble); border: 1px solid var(--border); border-bottom-left-radius: 3px; }
-.row.user  .bubble { background: var(--user-bubble); color: #fff; border-bottom-right-radius: 3px; }
-
-/* Typing */
-.dots { display: flex; gap: 4px; padding: 14px 16px; }
+.dots { display: flex; gap: 4px; padding: 12px 15px; }
 .dots span { width: 6px; height: 6px; background: var(--muted); border-radius: 50%; animation: dot 1.2s infinite; }
 .dots span:nth-child(2) { animation-delay: .2s; }
 .dots span:nth-child(3) { animation-delay: .4s; }
 @keyframes dot { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-5px);opacity:1} }
 
-/* ── WIDGETS ── */
-.widget { max-width: 86vw; }
+.actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; max-width: 86vw; }
+.action-btn { padding: 9px 15px; background: var(--card2); border: 1px solid var(--border); border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; transition: all .15s; }
+.action-btn:active { background: var(--blue); border-color: var(--blue); color: #fff; }
 
-.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
-.chip {
-  padding: 9px 15px;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-radius: 50px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  cursor: pointer;
-  transition: all .18s;
-  -webkit-user-select: none;
-}
-.chip:active { transform: scale(.95); }
-.chip.sel, .chip:hover { background: var(--blue); border-color: var(--blue); color: #fff; }
-
-.confirm-btn {
-  margin-top: 10px;
-  width: 100%;
-  padding: 12px;
-  background: var(--accent);
-  border: none;
-  border-radius: var(--rs);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-  cursor: pointer;
-  transition: opacity .2s;
-}
-.confirm-btn:active { opacity: .8; }
-.confirm-btn.danger { background: var(--danger); }
-
-.date-inp {
-  margin-top: 10px;
-  width: 100%;
-  padding: 12px 14px;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-radius: var(--rs);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-}
-.date-inp:focus { outline: none; border-color: var(--blue); }
-
-.ta-inp {
-  margin-top: 10px;
-  width: 100%;
-  padding: 12px 14px;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-radius: var(--rs);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  min-height: 80px;
-  resize: none;
-}
-.ta-inp:focus { outline: none; border-color: var(--blue); }
-
-/* Photo upload */
-.photo-zone {
-  margin-top: 10px;
-  border: 2px dashed var(--border);
-  border-radius: var(--rs);
-  padding: 20px 14px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color .2s;
-}
-.photo-zone:active { border-color: var(--blue); }
-.photo-zone .ico { font-size: 28px; margin-bottom: 6px; }
-.photo-zone p { font-size: 12px; color: var(--muted); }
-.thumbs { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 8px; }
-.thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border); }
-
-/* Signature */
-.sig-wrap { margin-top: 10px; }
+.sig-wrap { margin-top: 10px; max-width: 86vw; }
 .sig-canvas { width: 100%; height: 130px; background: #fff; border-radius: var(--rs); cursor: crosshair; touch-action: none; display: block; }
 .sig-btns { display: flex; gap: 8px; margin-top: 8px; }
 .sig-btn { flex: 1; padding: 10px; border: none; border-radius: var(--rs); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; }
 .sig-btn.clear { background: var(--card2); color: var(--text); border: 1px solid var(--border); }
-.sig-btn.ok { background: var(--accent); color: #fff; }
+.sig-btn.ok { background: var(--green); color: #fff; }
 
-/* Summary */
-.summary {
-  margin-top: 10px;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  overflow: hidden;
-}
-.sum-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  gap: 12px;
-  font-size: 13px;
-}
-.sum-row:last-child { border: none; }
-.sum-lbl { color: var(--muted); font-weight: 500; flex-shrink: 0; max-width: 48%; }
-.sum-val { color: var(--text); font-weight: 600; text-align: right; word-break: break-word; }
+.photo-wrap { margin-top: 10px; max-width: 86vw; }
+.photo-zone { border: 2px dashed var(--border); border-radius: var(--rs); padding: 20px 14px; text-align: center; cursor: pointer; }
+.photo-zone .ico { font-size: 26px; margin-bottom: 5px; }
+.photo-zone p { font-size: 12px; color: var(--muted); }
+.thumbs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.thumb { width: 54px; height: 54px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border); }
+.confirm-btn { width: 100%; margin-top: 10px; padding: 12px; background: var(--green); border: none; border-radius: var(--rs); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: #fff; cursor: pointer; }
 
-/* Submit */
-.submit-btn {
-  width: 100%;
-  padding: 15px;
-  background: var(--accent);
-  border: none;
-  border-radius: var(--rs);
-  color: #fff;
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: .3px;
-  cursor: pointer;
-  margin-top: 12px;
-  box-shadow: 0 4px 20px var(--accent-glow);
-  transition: opacity .2s, transform .1s;
-}
-.submit-btn:active { transform: scale(.98); opacity: .9; }
+.bar { padding: 12px 14px; background: var(--card); border-top: 1px solid var(--border); flex-shrink: 0; }
+.bar-row { display: flex; gap: 9px; align-items: flex-end; }
+.bar-field { flex: 1; background: var(--card2); border: 1px solid var(--border); border-radius: var(--rs); padding: 11px 14px; transition: border-color .2s; }
+.bar-field:focus-within { border-color: var(--blue); }
+.bar-field input { width: 100%; background: none; border: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; }
+.bar-field input::placeholder { color: var(--muted); }
+.send { width: 44px; height: 44px; background: var(--blue); border: none; border-radius: var(--rs); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 12px var(--blue-glow); }
+.send svg { width: 18px; height: 18px; }
+
+.submit-wrap { padding: 0 14px 14px; }
+.submit-btn { width: 100%; padding: 15px; background: var(--green); border: none; border-radius: var(--rs); color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 20px var(--green-glow); }
 .submit-btn:disabled { opacity: .5; cursor: wait; }
 
-/* Success */
-.success {
-  position: fixed; inset: 0;
-  background: rgba(13,17,23,.97);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 99; padding: 24px;
-  animation: fadeUp .4s ease;
-}
-.success-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 36px 28px;
-  text-align: center;
-  max-width: 340px;
-  width: 100%;
-}
-.success-ico {
-  width: 64px; height: 64px;
-  background: var(--accent);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 30px;
-  margin: 0 auto 18px;
-  box-shadow: 0 6px 24px var(--accent-glow);
-}
-.success-card h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.success { position: fixed; inset: 0; background: rgba(13,17,23,.97); display: flex; align-items: center; justify-content: center; z-index: 99; padding: 24px; animation: up .4s ease; }
+.success-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 36px 28px; text-align: center; max-width: 340px; width: 100%; }
+.success-ico { width: 64px; height: 64px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 18px; box-shadow: 0 6px 24px var(--green-glow); }
+.success-card h2 { font-family: 'Syne', sans-serif; font-size: 20px; margin-bottom: 8px; }
 .success-card p { font-size: 13px; color: var(--muted); line-height: 1.5; }
-
-/* ── INPUT BAR ── */
-.bar {
-  padding: 12px 14px;
-  background: var(--card);
-  border-top: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.bar-row { display: flex; gap: 9px; align-items: flex-end; }
-.bar-field {
-  flex: 1;
-  background: var(--card2);
-  border: 1px solid var(--border);
-  border-radius: var(--rs);
-  padding: 11px 14px;
-  transition: border-color .2s;
-}
-.bar-field:focus-within { border-color: var(--blue); }
-.bar-field input {
-  width: 100%; background: none; border: none; color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none;
-}
-.bar-field input::placeholder { color: var(--muted); }
-.send {
-  width: 44px; height: 44px;
-  background: var(--blue);
-  border: none; border-radius: var(--rs);
-  color: #fff; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 2px 12px var(--blue-glow);
-  transition: opacity .2s;
-}
-.send:active { opacity: .8; }
-.send svg { width: 18px; height: 18px; }
+.new-btn { width: 100%; margin-top: 20px; padding: 14px; background: var(--green); border: none; border-radius: var(--rs); color: #fff; font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
 
 .hidden { display: none !important; }
 </style>
@@ -318,20 +96,19 @@ body {
   <div class="hdr-icon">🏗️</div>
   <div class="hdr-text">
     <h1>PV Réception Chantier</h1>
-    <p id="subtitle">Assistant terrain — Happy Confort</p>
+    <p>Assistant terrain — Happy Confort</p>
   </div>
-  <div class="hdr-prog">
+  <div class="hdr-right">
     <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
     <span class="prog-pct" id="progPct">0%</span>
   </div>
 </div>
 
 <div class="chat" id="chat"></div>
-
-<div class="bar hidden" id="bar">
+<div class="bar" id="bar">
   <div class="bar-row">
     <div class="bar-field">
-      <input id="inp" type="text" placeholder="Tapez votre réponse..." autocomplete="off" autocorrect="off" />
+      <input id="inp" type="text" placeholder="Écrivez votre réponse..." autocomplete="off" autocorrect="off" />
     </div>
     <button class="send" id="sendBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
@@ -340,524 +117,328 @@ body {
 </div>
 
 <script>
-// ════════════════════════════════════════════════════════
-// CONFIG
-// ════════════════════════════════════════════════════════
-const API_KEY  = 'fe63b6658c5fecc581fdc308ef48664f';
-const FORM_ID  = '241082386472054';
-const JOTFORM  = 'https://eu-api.jotform.com';
+const CLAUDE_API  = '/api/claude';
+const JOTFORM_API = 'https://eu-api.jotform.com';
+const JOTFORM_KEY = 'fe63b6658c5fecc581fdc308ef48664f';
+const FORM_ID     = '241082386472054';
 
-// ════════════════════════════════════════════════════════
-// FLOW DEFINITION
-// Chaque étape : id, label (=champ Jotform), type, options, condition
-// ════════════════════════════════════════════════════════
-const FLOW = [
-  {
-    id: 'technicien',
-    label: 'Nom du technicien',
-    type: 'text',
-    ask: 'Bonjour 👋\n\nJe suis votre assistant pour le PV de réception chantier.\n\nCommençons — quel est votre nom ?',
-    ph: 'Jean Dupont'
-  },
-  {
-    id: 'client_nom',
-    label: 'Nom du client',
-    type: 'text',
-    ask: a => `Merci ${a.technicien} !\n\nQuel est le nom du client ?`,
-    ph: 'Nom complet'
-  },
-  {
-    id: 'client_email',
-    label: 'Email du client',
-    type: 'email',
-    ask: 'Adresse email du client ?',
-    ph: 'email@exemple.com'
-  },
-  {
-    id: 'chantiers',
-    label: 'Chantier(s) réalisé(s)',
-    type: 'multi',
-    options: ['PAC AIR / EAU', 'PAC AIR / AIR', 'Ballon thermodynamique', 'Panneaux photovoltaïques'],
-    ask: a => `Quel(s) chantier(s) ont été réalisés chez ${a.client_nom} ?`
-  },
-  {
-    id: 'date_fin',
-    label: 'Date de fin de chantier ',
-    type: 'date',
-    ask: 'Quelle est la date de fin de chantier ?'
-  },
-  {
-    id: 'adresse',
-    label: 'Adresse de signature',
-    type: 'text',
-    ask: 'Adresse du chantier ?',
-    ph: '12 rue des Lilas, 69000 Lyon'
-  },
-  {
-    id: 'reception',
-    label: 'Le client déclare que la réception est prononcée:',
-    type: 'choice',
-    options: ['Sans réserve', 'Avec réserves'],
-    ask: 'Le client déclare que la réception est prononcée :'
-  },
-  {
-    id: 'reserves',
-    label: 'ETAT DES RESERVES',
-    type: 'textarea',
-    ask: 'Décrivez les réserves du client :',
-    ph: 'Détaillez ici les réserves...',
-    when: a => a.reception === 'Avec réserves'
-  },
-  {
-    id: 'photos_ue_eau',
-    label: 'Photos UE PAC AIR / EAU',
-    type: 'photo',
-    ask: '📷 Photos de l\'unité extérieure PAC AIR / EAU',
-    when: a => a.chantiers?.includes('PAC AIR / EAU')
-  },
-  {
-    id: 'photos_ui_eau',
-    label: 'Photos UI PAC AIR / EAU',
-    type: 'photo',
-    ask: '📷 Photos de l\'unité intérieure PAC AIR / EAU',
-    when: a => a.chantiers?.includes('PAC AIR / EAU')
-  },
-  {
-    id: 'photos_ui_air',
-    label: 'Photos UI PAC AIR / AIR',
-    type: 'photo',
-    ask: '📷 Photos de l\'unité intérieure PAC AIR / AIR',
-    when: a => a.chantiers?.includes('PAC AIR / AIR')
-  },
-  {
-    id: 'photos_ue_air',
-    label: 'Photos UE PAC AIR / AIR',
-    type: 'photo',
-    ask: '📷 Photos de l\'unité extérieure PAC AIR / AIR',
-    when: a => a.chantiers?.includes('PAC AIR / AIR')
-  },
-  {
-    id: 'photos_ballon',
-    label: 'Photos Ballon thermodynamique',
-    type: 'photo',
-    ask: '📷 Photos du ballon thermodynamique',
-    when: a => a.chantiers?.includes('Ballon thermodynamique')
-  },
-  {
-    id: 'photos_pv',
-    label: 'Photos PV',
-    type: 'photo',
-    ask: '📷 Photos des panneaux photovoltaïques',
-    when: a => a.chantiers?.includes('Panneaux photovoltaïques')
-  },
-  {
-    id: 'date_signature',
-    label: 'Date de signature',
-    type: 'date',
-    ask: 'Quelle est la date de signature du PV ?'
-  },
-  {
-    id: 'sig_client',
-    label: 'Signature client',
-    type: 'signature',
-    ask: a => `✍️ Faites signer ${a.client_nom} ci-dessous`
-  },
-  {
-    id: 'sig_societe',
-    label: 'Signature représentant de la société',
-    type: 'signature',
-    ask: '✍️ Votre signature (représentant de la société)'
-  }
-];
+let history = [];
+let collectedData = {};
+let photoFiles = {};
+let sigBlobs = {};
+let jotQids = null;
+let busy = false;
 
-// ════════════════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════════════════
-const answers   = {};
-const photoFiles = {};
-const sigBlobs   = {};
-let   stepIdx    = 0;
-let   jotQids    = null; // question IDs from Jotform
+const SYSTEM = `Tu es un assistant terrain pour Happy Confort. Tu aides les techniciens à remplir le PV de réception chantier.
 
-// ════════════════════════════════════════════════════════
-// HELPERS
-// ════════════════════════════════════════════════════════
-const chat  = document.getElementById('chat');
-const bar   = document.getElementById('bar');
-const inp   = document.getElementById('inp');
+COMPORTEMENT :
+- Tu parles naturellement et brièvement (on est sur smartphone, sur le terrain)
+- Tu poses UNE seule question à la fois
+- Tu valides les informations (email avec @, date cohérente, etc.)
+- Si le technicien se trompe ou veut corriger, tu acceptes et continues
+- Tu es sympa et encourageant
 
-function activeFlow() {
-  return FLOW.filter(s => !s.when || s.when(answers));
-}
+DONNÉES À COLLECTER dans l'ordre :
+1. Nom du technicien
+2. Nom du client
+3. Email du client (valider format)
+4. Chantier(s) : PAC AIR/EAU, PAC AIR/AIR, Ballon thermodynamique, Panneaux PV (plusieurs possibles)
+5. Date de fin de chantier
+6. Adresse du chantier
+7. Réception : "Sans réserve" ou "Avec réserves"
+8. Si réserves → description
+9. Photos selon chantiers réalisés
+10. Date de signature
+11. Signature client
+12. Signature technicien
 
-function updateProgress() {
-  const steps  = activeFlow();
-  const done   = steps.filter(s => answers[s.id] !== undefined).length;
-  const pct    = Math.round(done / steps.length * 100);
-  document.getElementById('progFill').style.width = pct + '%';
-  document.getElementById('progPct').textContent  = pct + '%';
-}
+COMMANDES SPÉCIALES (à inclure dans ta réponse quand nécessaire) :
+- Pour demander des photos : écris [PHOTO:photos_ue_eau] ou [PHOTO:photos_ui_eau] ou [PHOTO:photos_ui_air] ou [PHOTO:photos_ue_air] ou [PHOTO:photos_ballon] ou [PHOTO:photos_pv]
+- Pour demander une signature : écris [SIGNATURE:sig_client] ou [SIGNATURE:sig_societe]
+- Pour proposer des boutons rapides : écris les options entre {{}} ex: {{Sans réserve}} {{Avec réserves}}
+- Quand TOUT est collecté (données + photos + 2 signatures) : écris [ENVOYER] dans ta réponse
 
-function scrollDown() {
-  setTimeout(() => chat.scrollTo({ top: chat.scrollHeight, behavior: 'smooth' }), 60);
-}
+DONNÉES DÉJÀ COLLECTÉES :
+{{DATA}}`;
 
-function agentMsg(text, widget) {
+// ── UI ──
+const chatEl = document.getElementById('chat');
+const barEl  = document.getElementById('bar');
+const inpEl  = document.getElementById('inp');
+
+function scroll() { setTimeout(() => chatEl.scrollTo({top: chatEl.scrollHeight, behavior:'smooth'}), 60); }
+
+function addAgent(text, widget) {
   const row = document.createElement('div');
   row.className = 'row agent';
   row.innerHTML = `<div class="lbl">Agent</div><div class="bubble">${text.replace(/\n/g,'<br>')}</div>`;
-  if (widget) { const w = document.createElement('div'); w.className = 'widget'; w.innerHTML = widget; row.appendChild(w); }
-  chat.appendChild(row);
-  scrollDown();
-  return row;
+  if (widget) row.appendChild(widget);
+  chatEl.appendChild(row);
+  scroll();
 }
 
-function userMsg(text) {
+function addUser(text) {
   const row = document.createElement('div');
   row.className = 'row user';
   row.innerHTML = `<div class="lbl" style="text-align:right">Vous</div><div class="bubble">${text}</div>`;
-  chat.appendChild(row);
-  scrollDown();
+  chatEl.appendChild(row);
+  scroll();
 }
 
-function typing() {
+function showDots() {
   const t = document.createElement('div');
-  t.className = 'row agent'; t.id = 'typing';
+  t.className = 'row agent'; t.id = 'dots';
   t.innerHTML = `<div class="bubble"><div class="dots"><span></span><span></span><span></span></div></div>`;
-  chat.appendChild(t); scrollDown(); return t;
+  chatEl.appendChild(t); scroll();
+}
+function hideDots() { document.getElementById('dots')?.remove(); }
+
+function setProgress(pct) {
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progPct').textContent = Math.round(pct) + '%';
 }
 
-function showBar(ph) {
-  bar.classList.remove('hidden');
-  inp.placeholder = ph || 'Tapez votre réponse...';
-  setTimeout(() => inp.focus(), 100);
-}
-function hideBar() { bar.classList.add('hidden'); inp.blur(); }
-
-// ════════════════════════════════════════════════════════
-// FLOW ENGINE
-// ════════════════════════════════════════════════════════
-function ask(step) {
-  hideBar();
-  const text = typeof step.ask === 'function' ? step.ask(answers) : step.ask;
-
-  if (step.type === 'text' || step.type === 'email') {
-    agentMsg(text);
-    showBar(step.ph || '');
-    return;
-  }
-
-  if (step.type === 'textarea') {
-    const uid = 'ta_' + step.id;
-    agentMsg(text, `
-      <textarea class="ta-inp" id="${uid}" placeholder="${step.ph||''}"></textarea>
-      <button class="confirm-btn" onclick="submitTA('${uid}','${step.id}')">✓ Valider</button>
-    `);
-    return;
-  }
-
-  if (step.type === 'choice') {
-    const chips = step.options.map(o =>
-      `<button class="chip" onclick="pickChoice('${step.id}','${o}',this)">${o}</button>`
-    ).join('');
-    agentMsg(text, `<div class="chips">${chips}</div>`);
-    return;
-  }
-
-  if (step.type === 'multi') {
-    const uid = 'mc_' + step.id;
-    const chips = step.options.map(o =>
-      `<button class="chip" data-sel="0" onclick="toggleChip(this)">${o}</button>`
-    ).join('');
-    agentMsg(text, `
-      <div class="chips" id="${uid}">${chips}</div>
-      <button class="confirm-btn" id="okmc_${uid}" onclick="confirmMulti('${uid}','${step.id}')">✓ Valider la sélection</button>
-    `);
-    return;
-  }
-
-  if (step.type === 'date') {
-    const uid = 'dt_' + step.id;
-    const today = new Date().toISOString().split('T')[0];
-    agentMsg(text, `
-      <input type="date" class="date-inp" id="${uid}" value="${today}" />
-      <button class="confirm-btn" onclick="submitDate('${uid}','${step.id}')">✓ Confirmer</button>
-    `);
-    return;
-  }
-
-  if (step.type === 'photo') {
-    const uid = 'pf_' + step.id;
-    agentMsg(text, `
-      <div class="photo-zone" onclick="document.getElementById('${uid}').click()">
-        <div class="ico">📷</div>
-        <p>Toucher pour prendre ou choisir des photos</p>
-      </div>
-      <input type="file" id="${uid}" accept="image/*" multiple capture="environment" class="hidden" onchange="handlePhotos('${step.id}',this)" />
-      <div class="thumbs" id="th_${step.id}"></div>
-      <button class="confirm-btn hidden" id="ok_${step.id}" onclick="submitPhotos('${step.id}')">✓ Valider les photos</button>
-    `);
-    return;
-  }
-
-  if (step.type === 'signature') {
-    const uid = 'sc_' + step.id;
-    agentMsg(text, `
-      <div class="sig-wrap">
-        <canvas class="sig-canvas" id="${uid}"></canvas>
-        <div class="sig-btns">
-          <button class="sig-btn clear" onclick="clearSig('${uid}')">Effacer</button>
-          <button class="sig-btn ok" onclick="submitSig('${uid}','${step.id}')">✓ Valider</button>
-        </div>
-      </div>
-    `);
-    setTimeout(() => initSig(uid), 80);
-    return;
-  }
+// ── PARSE ──
+function parse(text) {
+  const actions = [];
+  let clean = text.replace(/\{\{([^}]+)\}\}/g, (_, a) => { actions.push(a.trim()); return ''; });
+  const photo = clean.match(/\[PHOTO:([^\]]+)\]/)?.[1];
+  const sig   = clean.match(/\[SIGNATURE:([^\]]+)\]/)?.[1];
+  const send  = clean.includes('[ENVOYER]');
+  clean = clean.replace(/\[PHOTO:[^\]]+\]/g,'').replace(/\[SIGNATURE:[^\]]+\]/g,'').replace(/\[ENVOYER\]/g,'').trim();
+  return { clean, actions, photo, sig, send };
 }
 
-function nextStep() {
-  updateProgress();
-  const active = activeFlow();
-  const next   = active.find(s => answers[s.id] === undefined);
-  if (!next) { showSummary(); return; }
-  const t = typing();
-  setTimeout(() => { t.remove(); ask(next); }, 700 + Math.random() * 400);
-}
-
-function record(id, val) { answers[id] = val; nextStep(); }
-
-// ════════════════════════════════════════════════════════
-// WIDGET HANDLERS
-// ════════════════════════════════════════════════════════
-
-// Text / email
-document.getElementById('sendBtn').onclick = sendText;
-inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); sendText(); } });
-
-function sendText() {
-  const v = inp.value.trim(); if (!v) return;
-  inp.value = ''; hideBar();
-  userMsg(v);
-  const active = activeFlow();
-  const step   = active.find(s => answers[s.id] === undefined);
-  if (step) record(step.id, v);
-}
-
-// Choice
-function pickChoice(id, val, btn) {
-  userMsg(val);
-  record(id, val);
-}
-
-// Multi
-function toggleChip(btn) {
-  const sel = btn.getAttribute('data-sel') === '1';
-  btn.setAttribute('data-sel', sel ? '0' : '1');
-  btn.classList.toggle('sel', !sel);
-}
-
-function confirmMulti(uid, id) {
-  const container = document.getElementById(uid);
-  const sel = [...container.querySelectorAll('.chip[data-sel="1"]')].map(b => b.textContent.trim());
-  if (!sel.length) {
-    const btn = document.getElementById('okmc_' + uid);
-    btn.textContent = 'Sélectionnez au moins un chantier';
-    btn.classList.add('danger');
-    setTimeout(() => { btn.textContent = '✓ Valider la sélection'; btn.classList.remove('danger'); }, 1500);
-    return;
-  }
-  userMsg(sel.join(', '));
-  record(id, sel);
-}
-
-// Textarea
-function submitTA(uid, id) {
-  const v = document.getElementById(uid).value.trim(); if (!v) return;
-  userMsg(v); record(id, v);
-}
-
-// Date
-function submitDate(uid, id) {
-  const v = document.getElementById(uid).value; if (!v) return;
-  const d = new Date(v + 'T12:00:00');
-  userMsg(d.toLocaleDateString('fr-FR'));
-  record(id, v);
-}
-
-// Photos
-function handlePhotos(id, input) {
-  const files = [...input.files]; if (!files.length) return;
-  photoFiles[id] = files;
-  const thumbs = document.getElementById('th_' + id);
-  thumbs.innerHTML = '';
-  files.forEach(f => {
-    const r = new FileReader();
-    r.onload = e => { const img = document.createElement('img'); img.src = e.target.result; img.className = 'thumb'; thumbs.appendChild(img); };
-    r.readAsDataURL(f);
+// ── ACTIONS ──
+function makeActions(actions) {
+  if (!actions.length) return null;
+  const div = document.createElement('div');
+  div.className = 'actions';
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'action-btn'; b.textContent = a;
+    b.onclick = () => { div.remove(); send(a); };
+    div.appendChild(b);
   });
-  document.getElementById('ok_' + id).classList.remove('hidden');
+  return div;
 }
 
-function submitPhotos(id) {
-  const n = photoFiles[id]?.length || 0;
-  userMsg(`${n} photo(s) ✓`);
-  record(id, `${n} photo(s)`);
-}
-
-// Signature
-const sigCtxs = {};
-function initSig(uid) {
-  const c = document.getElementById(uid); if (!c || sigCtxs[uid]) return;
-  c.width  = c.offsetWidth  * window.devicePixelRatio;
-  c.height = c.offsetHeight * window.devicePixelRatio;
-  const ctx = c.getContext('2d');
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  let draw = false, lx, ly;
-  const p = (e) => { const r = c.getBoundingClientRect(); const t = e.touches?.[0]||e; return {x:t.clientX-r.left, y:t.clientY-r.top}; };
-  c.addEventListener('mousedown',  e => { draw=true; const {x,y}=p(e); lx=x; ly=y; });
-  c.addEventListener('mousemove',  e => { if(!draw) return; const {x,y}=p(e); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.stroke(); lx=x; ly=y; });
-  c.addEventListener('mouseup',    () => draw=false);
-  c.addEventListener('touchstart', e => { e.preventDefault(); draw=true; const {x,y}=p(e); lx=x; ly=y; }, {passive:false});
-  c.addEventListener('touchmove',  e => { e.preventDefault(); if(!draw) return; const {x,y}=p(e); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.stroke(); lx=x; ly=y; }, {passive:false});
-  c.addEventListener('touchend',   () => draw=false);
-  sigCtxs[uid] = {c, ctx};
-}
-
-function clearSig(uid) {
-  const s = sigCtxs[uid]; if(!s) return;
-  s.ctx.clearRect(0,0,s.c.width,s.c.height);
-}
-
-function submitSig(uid, id) {
-  const s = sigCtxs[uid]; if(!s) return;
-  // Convert canvas to blob
-  s.c.toBlob(blob => { sigBlobs[id] = blob; }, 'image/png');
-  answers[id] = 'Signature ✓';
-  userMsg('Signature validée ✓');
-  nextStep();
-}
-
-// ════════════════════════════════════════════════════════
-// SUMMARY
-// ════════════════════════════════════════════════════════
-function showSummary() {
-  hideBar();
-  const active = activeFlow();
-  const rows = active.map(s => {
-    let val = answers[s.id];
-    if (!val) return '';
-    if (Array.isArray(val)) val = val.join(', ');
-    if (s.type === 'signature') val = '✓ Signé';
-    if (s.type === 'photo') val = answers[s.id];
-    return `<div class="sum-row"><span class="sum-lbl">${s.label}</span><span class="sum-val">${val}</span></div>`;
-  }).join('');
-
-  const t = typing();
+// ── SIGNATURE ──
+function makeSig(sigId) {
+  const wrap = document.createElement('div');
+  wrap.className = 'sig-wrap';
+  const uid = 'c_' + sigId;
+  wrap.innerHTML = `<canvas class="sig-canvas" id="${uid}"></canvas>
+    <div class="sig-btns">
+      <button class="sig-btn clear" onclick="clrSig('${uid}')">Effacer</button>
+      <button class="sig-btn ok" onclick="okSig('${uid}','${sigId}')">✓ Valider</button>
+    </div>`;
   setTimeout(() => {
-    t.remove();
-    agentMsg('Parfait ! Voici le récapitulatif avant envoi 👇', `
-      <div class="summary">${rows}</div>
-      <button class="submit-btn" id="submitBtn" onclick="submitAll()">Envoyer à Jotform ✓</button>
-    `);
-  }, 700);
+    const c = document.getElementById(uid); if (!c) return;
+    c.width = c.offsetWidth * devicePixelRatio;
+    c.height = c.offsetHeight * devicePixelRatio;
+    const ctx = c.getContext('2d');
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    ctx.strokeStyle = '#0d1117'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+    let d=false, lx, ly;
+    const p = e => { const r=c.getBoundingClientRect(), t=e.touches?.[0]||e; return {x:t.clientX-r.left, y:t.clientY-r.top}; };
+    c.addEventListener('mousedown',  e => { d=true; ({x:lx,y:ly}=p(e)); });
+    c.addEventListener('mousemove',  e => { if(!d) return; const {x,y}=p(e); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.stroke(); lx=x; ly=y; });
+    c.addEventListener('mouseup',    () => d=false);
+    c.addEventListener('touchstart', e => { e.preventDefault(); d=true; ({x:lx,y:ly}=p(e)); }, {passive:false});
+    c.addEventListener('touchmove',  e => { e.preventDefault(); if(!d) return; const {x,y}=p(e); ctx.beginPath(); ctx.moveTo(lx,ly); ctx.lineTo(x,y); ctx.stroke(); lx=x; ly=y; }, {passive:false});
+    c.addEventListener('touchend',   () => d=false);
+  }, 80);
+  return wrap;
 }
 
-// ════════════════════════════════════════════════════════
-// SUBMIT TO JOTFORM
-// ════════════════════════════════════════════════════════
-async function submitAll() {
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = 'Envoi en cours...';
+function clrSig(uid) { const c=document.getElementById(uid); c?.getContext('2d').clearRect(0,0,c.width,c.height); }
+function okSig(uid, sigId) {
+  document.getElementById(uid)?.toBlob(b => sigBlobs[sigId]=b, 'image/png');
+  collectedData[sigId] = '✓ Signé';
+  document.getElementById(uid)?.closest('.sig-wrap')?.remove();
+  send('Signature validée ✓');
+}
+
+// ── PHOTO ──
+function makePhoto(photoId) {
+  const wrap = document.createElement('div');
+  wrap.className = 'photo-wrap';
+  const uid = 'pf_' + photoId;
+  wrap.innerHTML = `
+    <div class="photo-zone" onclick="document.getElementById('${uid}').click()">
+      <div class="ico">📷</div><p>Toucher pour prendre ou choisir des photos</p>
+    </div>
+    <input type="file" id="${uid}" accept="image/*" multiple capture="environment" class="hidden" onchange="onPhoto('${photoId}',this)" />
+    <div class="thumbs" id="th_${photoId}"></div>
+    <button class="confirm-btn hidden" id="ok_${photoId}" onclick="okPhoto('${photoId}')">✓ Valider les photos</button>`;
+  return wrap;
+}
+
+function onPhoto(id, input) {
+  const files = [...input.files]; if(!files.length) return;
+  photoFiles[id] = files;
+  const t = document.getElementById('th_'+id); t.innerHTML='';
+  files.forEach(f => { const r=new FileReader(); r.onload=e=>{ const i=document.createElement('img'); i.src=e.target.result; i.className='thumb'; t.appendChild(i); }; r.readAsDataURL(f); });
+  document.getElementById('ok_'+id).classList.remove('hidden');
+}
+
+function okPhoto(id) {
+  const n = photoFiles[id]?.length || 0;
+  collectedData[id] = `${n} photo(s)`;
+  document.getElementById('ok_'+id)?.closest('.photo-wrap')?.remove();
+  send(`${n} photo(s) ajoutée(s) ✓`);
+}
+
+// ── SUBMIT BUTTON ──
+function showSubmitBtn() {
+  const wrap = document.createElement('div');
+  wrap.className = 'submit-wrap';
+  wrap.innerHTML = `<button class="submit-btn" id="submitBtn" onclick="submitJotform()">Envoyer le PV à Jotform ✓</button>`;
+  chatEl.appendChild(wrap);
+  scroll();
+}
+
+// ── MAIN SEND ──
+async function send(userText) {
+  if (busy) return;
+  busy = true;
+  inpEl.disabled = true;
+
+  addUser(userText);
+  inpEl.value = '';
+  history.push({role:'user', content: userText});
+  showDots();
 
   try {
-    // 1. Get question IDs from Jotform
+    const system = SYSTEM.replace('{{DATA}}', JSON.stringify(collectedData, null, 2));
+    const res = await fetch(CLAUDE_API, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      })
+    });
+    const data = await res.json();
+    const raw = data.content?.[0]?.text || 'Désolé, une erreur est survenue.';
+    history.push({role:'assistant', content: raw});
+    hideDots();
+
+    const {clean, actions, photo, sig, send: doSend} = parse(raw);
+
+    // Progress heuristic
+    const keys = ['technicien','client_nom','client_email','chantiers','date_fin','adresse','reception','date_signature','sig_client','sig_societe'];
+    setProgress(keys.filter(k=>collectedData[k]).length / keys.length * 100);
+
+    if (doSend) {
+      addAgent(clean, makeActions(actions));
+      showSubmitBtn();
+    } else if (photo) {
+      addAgent(clean, makePhoto(photo));
+    } else if (sig) {
+      addAgent(clean, makeSig(sig));
+    } else {
+      addAgent(clean, makeActions(actions));
+      inpEl.disabled = false;
+      setTimeout(()=>inpEl.focus(), 100);
+    }
+
+  } catch(err) {
+    hideDots();
+    addAgent(`⚠️ Erreur : ${err.message}`);
+    inpEl.disabled = false;
+  }
+  busy = false;
+}
+
+// ── JOTFORM SUBMIT ──
+async function submitJotform() {
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Extraction des données...';
+
+  try {
+    // Extract structured data via Claude
+    const extractRes = await fetch(CLAUDE_API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'}, du PV de réception depuis cette conversation. Réponds UNIQUEMENT en JSON valide, sans markdown, avec exactement ces clés:
+{"Nom du technicien":"","Nom du client":"","Email du client":"","Chantier(s) réalisé(s)":"","Date de fin de chantier ":"","Adresse de signature":"","Le client déclare que la réception est prononcée:":"","ETAT DES RESERVES":"","Date de signature":""}`,
+        messages: history
+      })
+    });
+    const extractData = await extractRes.json();
+    let extracted = {};
+    try { extracted = JSON.parse(extractData.content[0].text.replace(/```json|```/g,'').trim()); } catch {}
+
+    btn.textContent = 'Chargement formulaire...';
+
     if (!jotQids) {
-      const r = await fetch(`${JOTFORM}/form/${FORM_ID}/questions?apiKey=${API_KEY}`);
+      const r = await fetch(`${JOTFORM_API}/form/${FORM_ID}/questions?apiKey=${JOTFORM_KEY}`);
       const d = await r.json();
       if (d.responseCode !== 200) throw new Error(d.message);
       jotQids = d.content;
     }
 
-    // 2. Build FormData
+    btn.textContent = 'Envoi en cours...';
     const fd = new FormData();
-    const active = activeFlow();
 
-    for (const step of active) {
-      const val = answers[step.id];
-      if (val === undefined) continue;
-
-      // Find matching question ID
-      const qid = Object.keys(jotQids).find(k => jotQids[k].text === step.label || jotQids[k].name === step.label);
+    for (const [label, value] of Object.entries(extracted)) {
+      if (!value) continue;
+      const qid = Object.keys(jotQids).find(k => jotQids[k].text === label);
       if (!qid) continue;
-
       const qtype = jotQids[qid].type;
-
-      if (step.type === 'signature' && sigBlobs[step.id]) {
-        fd.append(`submission[${qid}]`, sigBlobs[step.id], 'signature.png');
-      } else if (step.type === 'photo' && photoFiles[step.id]) {
-        photoFiles[step.id].forEach((f, i) => fd.append(`submission[${qid}][${i}]`, f));
-      } else if (step.type === 'date') {
-        const d = new Date(val + 'T12:00:00');
-        if (qtype === 'control_datetime') {
+      if (qtype === 'control_fullname') {
+        const p = String(value).split(' ');
+        fd.append(`submission[${qid}][first]`, p[0]||'');
+        fd.append(`submission[${qid}][last]`, p.slice(1).join(' ')||'');
+      } else if (qtype === 'control_datetime') {
+        const d = new Date(value);
+        if (!isNaN(d)) {
           fd.append(`submission[${qid}][month]`, String(d.getMonth()+1).padStart(2,'0'));
           fd.append(`submission[${qid}][day]`,   String(d.getDate()).padStart(2,'0'));
           fd.append(`submission[${qid}][year]`,  String(d.getFullYear()));
-        } else {
-          fd.append(`submission[${qid}]`, val);
-        }
-      } else if (step.type === 'multi') {
-        const arr = Array.isArray(val) ? val : val.split(', ');
-        arr.forEach(v => fd.append(`submission[${qid}][]`, v));
-      } else if (qtype === 'control_fullname') {
-        const parts = String(val).split(' ');
-        fd.append(`submission[${qid}][first]`, parts[0]||'');
-        fd.append(`submission[${qid}][last]`,  parts.slice(1).join(' ')||'');
+        } else fd.append(`submission[${qid}]`, value);
       } else {
-        fd.append(`submission[${qid}]`, String(val));
+        fd.append(`submission[${qid}]`, String(value));
       }
     }
 
-    // 3. POST
-    const res = await fetch(`${JOTFORM}/form/${FORM_ID}/submissions?apiKey=${API_KEY}`, {
-      method: 'POST', body: fd
-    });
-    const data = await res.json();
-    if (data.responseCode !== 200) throw new Error(data.message || 'Erreur Jotform');
+    // Photos
+    const photoMap = {photos_ue_eau:'Photos UE PAC AIR / EAU', photos_ui_eau:'Photos UI PAC AIR / EAU', photos_ui_air:'Photos UI PAC AIR / AIR', photos_ue_air:'Photos UE PAC AIR / AIR', photos_ballon:'Photos Ballon thermodynamique', photos_pv:'Photos PV'};
+    for (const [id, label] of Object.entries(photoMap)) {
+      if (!photoFiles[id]) continue;
+      const qid = Object.keys(jotQids).find(k => jotQids[k].text === label);
+      if (!qid) continue;
+      photoFiles[id].forEach((f,i) => fd.append(`submission[${qid}][${i}]`, f));
+    }
 
-    showSuccess();
-  } catch (err) {
-    btn.disabled = false;
-    btn.textContent = '⚠️ Erreur — Réessayer';
-    agentMsg(`Erreur lors de l'envoi : ${err.message}`);
+    // Signatures
+    const sigMap = {sig_client:'Signature client', sig_societe:'Signature représentant de la société'};
+    for (const [id, label] of Object.entries(sigMap)) {
+      if (!sigBlobs[id]) continue;
+      const qid = Object.keys(jotQids).find(k => jotQids[k].text === label);
+      if (!qid) continue;
+      fd.append(`submission[${qid}]`, sigBlobs[id], 'signature.png');
+    }
+
+    const res = await fetch(`${JOTFORM_API}/form/${FORM_ID}/submissions?apiKey=${JOTFORM_KEY}`, {method:'POST', body:fd});
+    const result = await res.json();
+    if (result.responseCode !== 200) throw new Error(result.message || 'Erreur Jotform');
+
+    const ov = document.createElement('div');
+    ov.className = 'success';
+    ov.innerHTML = `<div class="success-card"><div class="success-ico">✓</div><h2>PV envoyé !</h2><p>Le procès-verbal a été soumis avec succès dans Jotform.</p><button class="new-btn" onclick="location.reload()">Nouveau PV</button></div>`;
+    document.body.appendChild(ov);
+
+  } catch(err) {
+    btn.disabled = false; btn.textContent = '⚠️ Erreur — Réessayer';
+    addAgent(`Erreur lors de l'envoi : ${err.message}`);
   }
 }
 
-// ════════════════════════════════════════════════════════
-// SUCCESS
-// ════════════════════════════════════════════════════════
-function showSuccess() {
-  const ov = document.createElement('div');
-  ov.className = 'success';
-  ov.innerHTML = `
-    <div class="success-card">
-      <div class="success-ico">✓</div>
-      <h2>PV envoyé !</h2>
-      <p>Le procès-verbal de réception a été soumis avec succès.<br>Vous pouvez fermer cette page.</p>
-      <button class="submit-btn" style="margin-top:20px" onclick="location.reload()">Nouveau PV</button>
-    </div>`;
-  document.body.appendChild(ov);
-}
+// ── BOOT ──
+document.getElementById('sendBtn').onclick = () => { const v=inpEl.value.trim(); if(v&&!busy) send(v); };
+inpEl.addEventListener('keydown', e => { if(e.key==='Enter'){ const v=inpEl.value.trim(); if(v&&!busy) send(v); } });
 
-// ════════════════════════════════════════════════════════
-// BOOT
-// ════════════════════════════════════════════════════════
-setTimeout(() => {
-  const first = FLOW[0];
-  agentMsg(first.ask);
-  showBar(first.ph);
-}, 500);
+// Start conversation
+send('Bonjour');
 </script>
 </body>
 </html>

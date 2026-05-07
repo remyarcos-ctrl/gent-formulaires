@@ -36,11 +36,12 @@ ${techsContext || 'Aucun technicien'}
 ---
 
 Pour exécuter une action, réponds avec :
-ACTION: {"type":"assign_tech","deal_id":"<id_complet>","tech_id":"<id_complet>","canal":"whatsapp"}
-ou
-ACTION: {"type":"send_links","deal_id":"<id_complet>","canal":"whatsapp"}
+ACTION: {"type":"assign_tech","deal_id":"<id>","tech_id":"<id>","canal":"whatsapp"}
+ACTION: {"type":"add_tech","nom":"Jean Dupont","telephone":"+33612345678","email":"jean@example.com"}
+ACTION: {"type":"update_tech","tech_id":"<id>","nom":"...","telephone":"...","email":"..."}
+ACTION: {"type":"deactivate_tech","tech_id":"<id>"}
 
-Utilise les IDs complets des deals et techniciens. Quand Rémy mentionne un nom partiel (ex: "deal Dupont"), trouve le bon ID dans les données.`
+Pour add_tech : email est optionnel. Utilise les 6 derniers caractères d'ID pour identifier. Quand Rémy mentionne un nom partiel, trouve le bon ID dans les données.`
 
   const apiMessages = messages.length === 0
     ? [{ role: 'user', content: 'Bonjour Chloé, montre-moi un résumé des deals en cours.' }]
@@ -66,7 +67,28 @@ Utilise les IDs complets des deals et techniciens. Quand Rémy mentionne un nom 
         const deal = deals.find(d => d.id === action.deal_id || d.id.endsWith(action.deal_id))
         const tech = techniciens.find(t => t.id === action.tech_id || t.id.endsWith(action.tech_id))
 
-        if (action.type === 'assign_tech' && deal && tech) {
+        if (action.type === 'add_tech' && action.nom && action.telephone) {
+          const newTech = await prisma.technicien.create({
+            data: { nom: action.nom, telephone: action.telephone, email: action.email || null },
+          })
+          actionResult = { ok: true, action: 'add_tech', technicien: newTech }
+        } else if (action.type === 'update_tech') {
+          const techToUpdate = techniciens.find(t => t.id === action.tech_id || t.id.endsWith(action.tech_id))
+          if (techToUpdate) {
+            const data = {}
+            if (action.nom) data.nom = action.nom
+            if (action.telephone) data.telephone = action.telephone
+            if (action.email !== undefined) data.email = action.email
+            const updated = await prisma.technicien.update({ where: { id: techToUpdate.id }, data })
+            actionResult = { ok: true, action: 'update_tech', technicien: updated }
+          }
+        } else if (action.type === 'deactivate_tech') {
+          const techToDeactivate = techniciens.find(t => t.id === action.tech_id || t.id.endsWith(action.tech_id))
+          if (techToDeactivate) {
+            await prisma.technicien.update({ where: { id: techToDeactivate.id }, data: { actif: false } })
+            actionResult = { ok: true, action: 'deactivate_tech', nom: techToDeactivate.nom }
+          }
+        } else if (action.type === 'assign_tech' && deal && tech) {
           const clientNom = `${deal.client_prenom || ''} ${deal.client_nom || ''}`.trim() || 'Client'
           const adresse = `${deal.client_adresse || ''}, ${deal.client_ville || ''}`.trim().replace(/^,\s*/, '')
 

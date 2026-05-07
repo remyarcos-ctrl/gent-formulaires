@@ -35,7 +35,7 @@ export default function DealAgent({ dealId, onComplete, savedMessages = [] }) {
       const res = await fetch('/api/deal/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [], dealId, context: "Commence la saisie d'un nouveau deal." }),
+        body: JSON.stringify({ messages: [], dealId, context: `Commence la saisie d'un nouveau deal. Utilise la phrase d'ouverture de style n°${Math.ceil(Math.random() * 5)} parmi tes 5 variantes.` }),
       })
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
       const data = await res.json()

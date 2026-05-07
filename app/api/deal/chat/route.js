@@ -32,6 +32,20 @@ export async function POST(request) {
             where: { id: dealId },
             data: { ...dealData, statut: 'complet', conversation: apiMessages },
           })
+
+          // Notify Rémy via Telegram
+          const remyChatId = process.env.REMY_TELEGRAM_CHAT_ID
+          const botToken = process.env.TELEGRAM_BOT_TOKEN
+          if (remyChatId && botToken) {
+            const nom = `${dealData.client_prenom || ''} ${dealData.client_nom || ''}`.trim() || 'Client'
+            const produits = dealData.produits?.join(', ') || 'Non renseigné'
+            const msg = `🔔 Nouveau deal Happy Confort !\n\n👤 Client : ${nom}\n🔧 Produits : ${produits}\n📍 ${dealData.client_ville || ''}\n\n✅ Deal complet — à assigner`
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ chat_id: remyChatId, text: msg }),
+            }).catch(() => {})
+          }
         }
       } catch (e) {}
     }

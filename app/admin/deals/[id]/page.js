@@ -161,9 +161,11 @@ export default function DealDetailPage({ params }) {
         )}
 
         {/* Assignation */}
-        {!deal.technicien_id && !result?.ok && (
+        {!result?.ok && (
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5">
-            <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Assigner un technicien</h2>
+            <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">
+              {deal.technicien_id ? 'Changer de technicien' : 'Assigner un technicien'}
+            </h2>
             <div className="space-y-3">
               <select
                 value={selectedTech}
@@ -195,7 +197,7 @@ export default function DealDetailPage({ params }) {
                 disabled={!selectedTech || sending}
                 className="w-full bg-sky-600 hover:bg-sky-500 disabled:opacity-40 text-white font-bold py-4 rounded-2xl transition-all text-base"
               >
-                {sending ? 'Envoi...' : `Assigner et envoyer via ${canal === 'whatsapp' ? 'WhatsApp' : 'Telegram'}`}
+                {sending ? 'Envoi...' : `${deal.technicien_id ? 'Réassigner' : 'Assigner'} et envoyer via ${canal === 'whatsapp' ? 'WhatsApp' : 'Telegram'}`}
               </button>
             </div>
           </div>

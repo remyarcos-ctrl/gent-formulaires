@@ -44,7 +44,7 @@ ACTION: {"type":"add_tech","nom":"Jean Dupont","telephone":"+33612345678","email
 ACTION: {"type":"update_tech","tech_id":"<id>","nom":"...","telephone":"...","email":"..."}
 ACTION: {"type":"deactivate_tech","tech_id":"<id>"}
 
-Pour add_tech : email est optionnel. Utilise les 6 derniers caractères d'ID pour identifier. Quand Rémy mentionne un nom partiel, trouve le bon ID dans les données.`
+Pour add_tech : email est optionnel. Utilise les 6 derniers caractères d'ID pour identifier. Quand le beau gosse mentionne un nom partiel, trouve le bon ID dans les données.`
 
   const apiMessages = messages.length === 0
     ? [{ role: 'user', content: 'Bonjour Chloé, montre-moi un résumé des deals en cours.' }]

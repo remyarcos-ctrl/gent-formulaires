@@ -98,3 +98,9 @@ model PvReception {
 
   @@map("pv_reception")
 }
+
+model AdminMemory {
+  id           String   @id @default(cuid())
+  conversation Json     @default("[]")
+  updated_at   DateTime @updatedAt
+}

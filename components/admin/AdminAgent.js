@@ -21,14 +21,56 @@ export default function AdminAgent() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading])
 
+  function saveToLocalStorage(msgs) {
+    try { localStorage.setItem('adminMessages', JSON.stringify(msgs)) } catch (e) {}
+  }
+
+  function saveToDb(msgs) {
+    // Fire-and-forget — does not block the UI
+    fetch('/api/admin/memory', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ conversation: msgs }),
+    }).catch(() => {})
+  }
+
   async function initChat() {
-    const saved = sessionStorage.getItem('adminMessages')
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved)
-        if (parsed.length > 0) { setMessages(parsed); return }
-      } catch (e) {}
-    }
+    // Fast path: localStorage for instant restore (avoids flash)
+    try {
+      const local = localStorage.getItem('adminMessages')
+      if (local) {
+        const parsed = JSON.parse(local)
+        if (parsed.length > 0) {
+          setMessages(parsed)
+          // Still fetch DB in background to sync the latest durable state
+          fetch('/api/admin/memory')
+            .then(r => r.json())
+            .then(data => {
+              if (Array.isArray(data.conversation) && data.conversation.length > 0) {
+                setMessages(data.conversation)
+                saveToLocalStorage(data.conversation)
+              }
+            })
+            .catch(() => {})
+          return
+        }
+      }
+    } catch (e) {}
+
+    // Durable path: fetch from DB
+    try {
+      const res = await fetch('/api/admin/memory')
+      if (res.ok) {
+        const data = await res.json()
+        if (Array.isArray(data.conversation) && data.conversation.length > 0) {
+          setMessages(data.conversation)
+          saveToLocalStorage(data.conversation)
+          return
+        }
+      }
+    } catch (e) {}
+
+    // No history found — trigger Chloé's opening message
     setLoading(true)
     try {
       const res = await fetch('/api/admin/chat', {
@@ -41,7 +83,8 @@ export default function AdminAgent() {
       const { text, choices: c } = parseResponse(data.response)
       const initial = [{ role: 'assistant', content: text, actionResult: data.actionResult }]
       setMessages(initial)
-      sessionStorage.setItem('adminMessages', JSON.stringify(initial))
+      saveToLocalStorage(initial)
+      saveToDb(initial)
       setChoices(c)
     } catch (e) {
       setMessages([{ role: 'assistant', content: `⚠️ Erreur : ${e.message}` }])
@@ -50,11 +93,37 @@ export default function AdminAgent() {
     }
   }
 
-  function newConversation() {
-    sessionStorage.removeItem('adminMessages')
+  async function newConversation() {
+    localStorage.removeItem('adminMessages')
+    // Clear DB record
+    fetch('/api/admin/memory', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ conversation: [] }),
+    }).catch(() => {})
     setMessages([])
     setChoices([])
-    initChat()
+    // Trigger a fresh opening message
+    setLoading(true)
+    try {
+      const res = await fetch('/api/admin/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [], openingStyle: Math.ceil(Math.random() * 5) }),
+      })
+      if (!res.ok) throw new Error(`Erreur ${res.status}`)
+      const data = await res.json()
+      const { text, choices: c } = parseResponse(data.response)
+      const initial = [{ role: 'assistant', content: text, actionResult: data.actionResult }]
+      setMessages(initial)
+      saveToLocalStorage(initial)
+      saveToDb(initial)
+      setChoices(c)
+    } catch (e) {
+      setMessages([{ role: 'assistant', content: `⚠️ Erreur : ${e.message}` }])
+    } finally {
+      setLoading(false)
+    }
   }
 
   function parseResponse(text) {
@@ -91,7 +160,8 @@ export default function AdminAgent() {
       const { text, choices: c } = parseResponse(data.response)
       const updated = [...newMessages, { role: 'assistant', content: text, actionResult: data.actionResult }]
       setMessages(updated)
-      sessionStorage.setItem('adminMessages', JSON.stringify(updated))
+      saveToLocalStorage(updated)
+      saveToDb(updated)
       setChoices(c)
     } catch (e) {
       setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ Erreur : ${e.message}` }])

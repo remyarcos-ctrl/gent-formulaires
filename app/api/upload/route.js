@@ -1,24 +1,29 @@
 import { NextResponse } from 'next/server'
-import { uploadToDrive } from '@/lib/google'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+)
 
 export async function POST(request) {
   const formData = await request.formData()
   const file = formData.get('file')
-  const interventionId = formData.get('interventionId')
+  const interventionId = formData.get('interventionId') || 'general'
 
-  if (!file) {
-    return NextResponse.json({ error: 'No file' }, { status: 400 })
-  }
+  if (!file) return NextResponse.json({ error: 'No file' }, { status: 400 })
 
   const bytes = await file.arrayBuffer()
   const buffer = Buffer.from(bytes)
-  const filename = `intervention_${interventionId}_${Date.now()}_${file.name}`
+  const ext = file.name.split('.').pop() || 'jpg'
+  const filename = `${interventionId}/${Date.now()}.${ext}`
 
-  try {
-    const driveFile = await uploadToDrive(buffer, filename, file.type)
-    return NextResponse.json({ url: driveFile.webViewLink, driveId: driveFile.id })
-  } catch (e) {
-    const base64 = `data:${file.type};base64,${buffer.toString('base64')}`
-    return NextResponse.json({ url: base64 })
-  }
+  const { error } = await supabase.storage
+    .from('photos')
+    .upload(filename, buffer, { contentType: file.type, upsert: false })
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  const { data } = supabase.storage.from('photos').getPublicUrl(filename)
+  return NextResponse.json({ url: data.publicUrl })
 }

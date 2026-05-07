@@ -9,7 +9,7 @@ function renderMarkdown(text) {
     .replace(/\n/g, '<br/>')
 }
 
-export default function DealAgent({ dealId, onComplete }) {
+export default function DealAgent({ dealId, onComplete, savedMessages = [] }) {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -23,6 +23,13 @@ export default function DealAgent({ dealId, onComplete }) {
   }, [messages, loading])
 
   async function initChat() {
+    if (savedMessages.length > 0) {
+      const lastAssistant = [...savedMessages].reverse().find(m => m.role === 'assistant')
+      if (lastAssistant) {
+        setMessages(savedMessages)
+        return
+      }
+    }
     setLoading(true)
     try {
       const res = await fetch('/api/deal/chat', {

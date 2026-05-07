@@ -6,18 +6,41 @@ import DealAgent from '@/components/deal/DealAgent'
 
 export default function NewDealPage() {
   const [dealId, setDealId] = useState(null)
+  const [savedMessages, setSavedMessages] = useState([])
   const [error, setError] = useState(null)
   const router = useRouter()
 
   useEffect(() => {
-    fetch('/api/deals', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ statut: 'en_cours' }),
-    })
-      .then(r => r.json())
-      .then(deal => setDealId(deal.id))
-      .catch(e => setError(e.message))
+    async function initDeal() {
+      const savedId = sessionStorage.getItem('currentDealId')
+      if (savedId) {
+        const res = await fetch(`/api/deals/${savedId}`)
+        if (res.ok) {
+          const deal = await res.json()
+          if (deal.statut !== 'complet' && deal.statut !== 'assigné') {
+            setDealId(savedId)
+            if (deal.conversation && Array.isArray(deal.conversation)) {
+              setSavedMessages(deal.conversation)
+            }
+            return
+          }
+        }
+        sessionStorage.removeItem('currentDealId')
+      }
+      // Create new deal
+      fetch('/api/deals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ statut: 'en_cours' }),
+      })
+        .then(r => r.json())
+        .then(deal => {
+          setDealId(deal.id)
+          sessionStorage.setItem('currentDealId', deal.id)
+        })
+        .catch(e => setError(e.message))
+    }
+    initDeal()
   }, [])
 
   if (error) return (
@@ -49,7 +72,7 @@ export default function NewDealPage() {
           ✕ Quitter
         </button>
       </div>
-      <DealAgent dealId={dealId} onComplete={() => router.push('/admin/deals')} />
+      <DealAgent dealId={dealId} savedMessages={savedMessages} onComplete={() => { sessionStorage.removeItem('currentDealId'); router.push('/admin/deals') }} />
     </div>
   )
 }

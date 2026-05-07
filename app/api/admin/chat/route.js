@@ -5,7 +5,7 @@ import prisma from '@/lib/prisma'
 import { sendNotification } from '@/lib/notifications'
 
 export async function POST(request) {
-  const { messages } = await request.json()
+  const { messages, openingStyle } = await request.json()
 
   // Load live context for Chloé
   const [deals, techniciens] = await Promise.all([
@@ -47,7 +47,7 @@ ACTION: {"type":"deactivate_tech","tech_id":"<id>"}
 Pour add_tech : email est optionnel. Utilise les 6 derniers caractères d'ID pour identifier. Quand le beau gosse mentionne un nom partiel, trouve le bon ID dans les données.`
 
   const apiMessages = messages.length === 0
-    ? [{ role: 'user', content: 'Bonjour Chloé, montre-moi un résumé des deals en cours.' }]
+    ? [{ role: 'user', content: `Bonjour Chloé, présente-moi un résumé de l'activité. Utilise une phrase d'accueil de style n°${openingStyle || 1} parmi tes variantes (dynamique, pro, complice, synthétique, motivant) — varie à chaque session.` }]
     : messages
 
   try {

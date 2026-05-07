@@ -27,7 +27,7 @@ export default function AdminAgent() {
       const res = await fetch('/api/admin/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [] }),
+        body: JSON.stringify({ messages: [], openingStyle: Math.ceil(Math.random() * 5) }),
       })
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
       const data = await res.json()

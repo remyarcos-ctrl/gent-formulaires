@@ -12,6 +12,7 @@ export default function NewDealPage() {
 
   useEffect(() => {
     async function initDeal() {
+      // 1. Try sessionStorage first (fastest)
       const savedId = sessionStorage.getItem('currentDealId')
       if (savedId) {
         const res = await fetch(`/api/deals/${savedId}`)
@@ -19,15 +20,29 @@ export default function NewDealPage() {
           const deal = await res.json()
           if (deal.statut !== 'complet' && deal.statut !== 'assigné') {
             setDealId(savedId)
-            if (deal.conversation && Array.isArray(deal.conversation)) {
-              setSavedMessages(deal.conversation)
-            }
+            if (deal.conversation && Array.isArray(deal.conversation)) setSavedMessages(deal.conversation)
             return
           }
         }
         sessionStorage.removeItem('currentDealId')
       }
-      // Create new deal
+
+      // 2. Fallback: find most recent en_cours deal in DB (browser was closed)
+      try {
+        const res = await fetch('/api/deals')
+        if (res.ok) {
+          const deals = await res.json()
+          const recent = deals.find(d => d.statut === 'en_cours')
+          if (recent) {
+            setDealId(recent.id)
+            sessionStorage.setItem('currentDealId', recent.id)
+            if (recent.conversation && Array.isArray(recent.conversation)) setSavedMessages(recent.conversation)
+            return
+          }
+        }
+      } catch (e) {}
+
+      // 3. No deal found — create new
       fetch('/api/deals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

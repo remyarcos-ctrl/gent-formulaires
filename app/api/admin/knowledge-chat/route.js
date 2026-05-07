@@ -55,8 +55,16 @@ export async function POST(request) {
   const knowledgeContent = readKnowledge()
   const systemPrompt = buildSystemPrompt(knowledgeContent)
 
+  const hasContent = knowledgeContent.trim().length > 100
+  const incomplete = (knowledgeContent.match(/À COMPLÉTER/g) || []).length
+  const openingMsg = hasContent
+    ? (incomplete > 0
+        ? `Reprends sans te présenter à nouveau. Dis juste en une phrase ce que tu sais déjà, puis pose directement la prochaine question sur les ${incomplete} section(s) encore incomplète(s).`
+        : `Reprends sans te présenter. Toutes les sections sont remplies — invite le gérant à t'apprendre autre chose sur l'entreprise.`)
+    : 'Présente-toi brièvement et commence à poser tes questions pour enrichir ta base de connaissance.'
+
   const apiMessages = messages.length === 0
-    ? [{ role: 'user', content: 'Commence : présente-toi brièvement et pose ta première question sur les sections incomplètes.' }]
+    ? [{ role: 'user', content: openingMsg }]
     : messages
 
   try {

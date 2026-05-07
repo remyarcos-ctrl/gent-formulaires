@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import anthropic from '@/lib/anthropic'
 import { CHLOE_INTERVENTION_PROMPT } from '@/lib/chloe'
+import { getKnowledge } from '@/lib/chloe-knowledge'
 import prisma from '@/lib/prisma'
 
 export async function POST(request) {
@@ -23,7 +24,9 @@ export async function POST(request) {
     } catch (e) {}
   }
 
-  const systemPrompt = `${CHLOE_INTERVENTION_PROMPT}${dealContext}\n\n${context || ''}`
+  const knowledge = getKnowledge()
+  const base = knowledge ? `${CHLOE_INTERVENTION_PROMPT}\n\n--- CONNAISSANCE HAPPY CONFORT ---\n${knowledge}\n---` : CHLOE_INTERVENTION_PROMPT
+  const systemPrompt = `${base}${dealContext}\n\n${context || ''}`
 
   const apiMessages = messages.length === 0
     ? [{ role: 'user', content: context || "Commence l'intervention" }]

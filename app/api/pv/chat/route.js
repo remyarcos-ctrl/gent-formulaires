@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import anthropic from '@/lib/anthropic'
 import { CHLOE_PV_PROMPT } from '@/lib/chloe'
+import { getKnowledge } from '@/lib/chloe-knowledge'
 import prisma from '@/lib/prisma'
 import { sendPvEmail } from '@/lib/email'
 
@@ -12,7 +13,8 @@ export async function POST(request) {
     include: { deal: { include: { technicien: true } }, intervention: true },
   }) : null
 
-  let systemPrompt = CHLOE_PV_PROMPT
+  const knowledge = getKnowledge()
+  let systemPrompt = knowledge ? `${CHLOE_PV_PROMPT}\n\n--- CONNAISSANCE HAPPY CONFORT ---\n${knowledge}\n---` : CHLOE_PV_PROMPT
   if (pv?.deal) {
     const d = pv.deal
     systemPrompt += `\n\nDonnées pré-remplies :\n- Client : ${d.client_prenom || ''} ${d.client_nom || ''}\n- Adresse : ${d.client_adresse || ''}, ${d.client_ville || ''}\n- Produits : ${d.produits?.join(', ') || ''}\n- Technicien : ${d.technicien?.nom || ''}`

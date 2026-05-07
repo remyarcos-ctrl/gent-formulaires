@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server'
 import anthropic from '@/lib/anthropic'
 import { CHLOE_DEAL_PROMPT } from '@/lib/chloe'
+import { getKnowledge } from '@/lib/chloe-knowledge'
 import prisma from '@/lib/prisma'
 
 export async function POST(request) {
   const { messages, dealId, context } = await request.json()
 
-  const systemPrompt = context ? `${CHLOE_DEAL_PROMPT}\n\n${context}` : CHLOE_DEAL_PROMPT
+  const knowledge = getKnowledge()
+  const base = knowledge ? `${CHLOE_DEAL_PROMPT}\n\n--- CONNAISSANCE HAPPY CONFORT ---\n${knowledge}\n---` : CHLOE_DEAL_PROMPT
+  const systemPrompt = context ? `${base}\n\n${context}` : base
 
   const apiMessages = messages.length === 0
     ? [{ role: 'user', content: context || "Commence la saisie d'un nouveau deal." }]

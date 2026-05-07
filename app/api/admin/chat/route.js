@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import anthropic from '@/lib/anthropic'
 import { CHLOE_ADMIN_PROMPT } from '@/lib/chloe'
+import { getKnowledge } from '@/lib/chloe-knowledge'
 import prisma from '@/lib/prisma'
 import { sendNotification } from '@/lib/notifications'
 
@@ -28,7 +29,9 @@ export async function POST(request) {
     `[ID:${t.id.slice(-6)}] ${t.nom} — tél:${t.telephone}`
   ).join('\n')
 
-  const systemPrompt = `${CHLOE_ADMIN_PROMPT}
+  const knowledge = getKnowledge()
+  const adminBase = knowledge ? `${CHLOE_ADMIN_PROMPT}\n\n--- CONNAISSANCE HAPPY CONFORT ---\n${knowledge}\n---` : CHLOE_ADMIN_PROMPT
+  const systemPrompt = `${adminBase}
 
 --- DONNÉES EN TEMPS RÉEL ---
 DEALS (${deals.length}) :

@@ -17,9 +17,12 @@ export async function POST(request) {
     prisma.technicien.findMany({ where: { actif: true }, orderBy: { nom: 'asc' } }),
   ])
 
-  const dealsContext = deals.map(d =>
-    `[ID:${d.id.slice(-6)}] ${d.client_prenom || ''} ${d.client_nom || 'Inconnu'} — ${d.produits?.join(', ') || '?'} — statut:${d.statut} — tech:${d.technicien?.nom || 'non assigné'}`
-  ).join('\n')
+  const dealsContext = deals.map(d => {
+    const nom = (d.client_prenom || d.client_nom)
+      ? `${d.client_prenom || ''} ${d.client_nom || ''}`.trim()
+      : `Deal du ${new Date(d.created_at).toLocaleDateString('fr-FR')}`
+    return `[ID:${d.id.slice(-6)}] ${nom} — ${d.produits?.join(', ') || 'produits non renseignés'} — statut:${d.statut} — tech:${d.technicien?.nom || 'non assigné'}`
+  }).join('\n')
 
   const techsContext = techniciens.map(t =>
     `[ID:${t.id.slice(-6)}] ${t.nom} — tél:${t.telephone}`

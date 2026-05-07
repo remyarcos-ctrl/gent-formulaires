@@ -61,7 +61,9 @@ export default async function AdminDealsPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <p className="font-semibold text-white truncate">
-                        {deal.client_prenom} {deal.client_nom || 'Client non renseigné'}
+                        {(deal.client_prenom || deal.client_nom)
+                          ? `${deal.client_prenom || ''} ${deal.client_nom || ''}`.trim()
+                          : `Deal du ${new Date(deal.created_at).toLocaleDateString('fr-FR')} — en cours`}
                       </p>
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUT_COLORS[deal.statut] || STATUT_COLORS.nouveau}`}>
                         {deal.statut}

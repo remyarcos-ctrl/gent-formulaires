@@ -30,6 +30,9 @@ export default function AdminPage() {
           <Link href="/admin/analytics" className="text-xs text-gray-400 hover:text-white transition-colors">
             📊 Analytics
           </Link>
+          <Link href="/admin/knowledge" className="text-xs text-gray-400 hover:text-white transition-colors">
+            🧠 Base de connaissance
+          </Link>
         </div>
       </div>
       <AdminAgent />

@@ -22,6 +22,13 @@ export default function AdminAgent() {
   }, [messages, loading])
 
   async function initChat() {
+    const saved = sessionStorage.getItem('adminMessages')
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        if (parsed.length > 0) { setMessages(parsed); return }
+      } catch (e) {}
+    }
     setLoading(true)
     try {
       const res = await fetch('/api/admin/chat', {
@@ -32,13 +39,22 @@ export default function AdminAgent() {
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
       const data = await res.json()
       const { text, choices: c } = parseResponse(data.response)
-      setMessages([{ role: 'assistant', content: text, actionResult: data.actionResult }])
+      const initial = [{ role: 'assistant', content: text, actionResult: data.actionResult }]
+      setMessages(initial)
+      sessionStorage.setItem('adminMessages', JSON.stringify(initial))
       setChoices(c)
     } catch (e) {
       setMessages([{ role: 'assistant', content: `⚠️ Erreur : ${e.message}` }])
     } finally {
       setLoading(false)
     }
+  }
+
+  function newConversation() {
+    sessionStorage.removeItem('adminMessages')
+    setMessages([])
+    setChoices([])
+    initChat()
   }
 
   function parseResponse(text) {
@@ -73,11 +89,9 @@ export default function AdminAgent() {
       if (!res.ok) throw new Error(`Erreur ${res.status}`)
       const data = await res.json()
       const { text, choices: c } = parseResponse(data.response)
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: text,
-        actionResult: data.actionResult,
-      }])
+      const updated = [...newMessages, { role: 'assistant', content: text, actionResult: data.actionResult }]
+      setMessages(updated)
+      sessionStorage.setItem('adminMessages', JSON.stringify(updated))
       setChoices(c)
     } catch (e) {
       setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ Erreur : ${e.message}` }])
@@ -147,7 +161,13 @@ export default function AdminAgent() {
             ))}
           </div>
         )}
-        <div className="flex gap-2 p-4">
+        <div className="flex gap-2 px-4 pt-2">
+          <button onClick={newConversation}
+            className="text-xs text-gray-500 hover:text-gray-300 transition-colors underline">
+            Nouvelle conversation
+          </button>
+        </div>
+      <div className="flex gap-2 p-4">
           <input type="text" value={input} onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
             placeholder="Ex: assigne Thomas au deal Dupont par WhatsApp..."

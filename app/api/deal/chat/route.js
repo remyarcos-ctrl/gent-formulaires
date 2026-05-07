@@ -37,6 +37,23 @@ export async function POST(request) {
     }
 
     let cleanText = text.replace(/DEAL_DATA:\s*\{.*?\}/s, '').trim()
+
+    // Parse PARTIAL_DATA for real-time updates
+    let partialData = null
+    const partialMatch = cleanText.match(/PARTIAL_DATA:\s*(\{.*?\})/s)
+    if (partialMatch) {
+      try {
+        partialData = JSON.parse(partialMatch[1])
+        if (dealId && partialData && Object.keys(partialData).length > 0) {
+          await prisma.deal.update({
+            where: { id: dealId },
+            data: partialData,
+          })
+        }
+      } catch (e) {}
+      cleanText = cleanText.replace(/PARTIAL_DATA:\s*\{.*?\}/s, '').trim()
+    }
+
     const choicesMatch = cleanText.match(/CHOICES:\s*(\[.*?\])/s)
     let choices = []
     if (choicesMatch) {
@@ -46,7 +63,7 @@ export async function POST(request) {
       } catch (e) {}
     }
 
-    return NextResponse.json({ response: cleanText, choices, dealData })
+    return NextResponse.json({ response: cleanText, choices, dealData, partialData })
   } catch (e) {
     return NextResponse.json({ error: e.message }, { status: 500 })
   }

@@ -27,6 +27,9 @@ export default function AdminPage() {
           <Link href="/admin/deals" className="text-xs text-gray-400 hover:text-white transition-colors">
             Vue liste
           </Link>
+          <Link href="/admin/analytics" className="text-xs text-gray-400 hover:text-white transition-colors">
+            📊 Analytics
+          </Link>
         </div>
       </div>
       <AdminAgent />

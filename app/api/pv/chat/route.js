@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import anthropic from '@/lib/anthropic'
 import { CHLOE_PV_PROMPT } from '@/lib/chloe'
 import prisma from '@/lib/prisma'
+import { sendPvEmail } from '@/lib/email'
 
 export async function POST(request) {
   const { messages, pvId, context } = await request.json()
@@ -45,6 +46,10 @@ export async function POST(request) {
           where: { pv_reception: { id: pvId } },
           data: { statut: 'pv_signé' },
         })
+        // Email to client
+        if (pv?.deal) {
+          sendPvEmail(pv.deal, pvId).catch(() => {})
+        }
       }
     }
 

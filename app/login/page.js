@@ -24,7 +24,8 @@ export default function LoginPage() {
       router.push('/admin')
       router.refresh()
     } else {
-      setError('Mot de passe incorrect')
+      const data = await res.json()
+      setError(data.error || 'Mot de passe incorrect')
     }
     setLoading(false)
   }

@@ -2,8 +2,12 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
+import { requireAdminAuth } from '@/lib/auth'
 
 export async function GET(request) {
+  const authError = requireAdminAuth()
+  if (authError) return authError
+
   const { searchParams } = new URL(request.url)
   const limit = parseInt(searchParams.get('limit') || '50')
   const offset = parseInt(searchParams.get('offset') || '0')
@@ -18,7 +22,18 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
+  const authError = requireAdminAuth()
+  if (authError) return authError
+
   const body = await request.json()
+
+  // Validation des champs obligatoires
+  if (!body.technicien || !body.adresse) {
+    return NextResponse.json(
+      { error: 'Les champs technicien et adresse sont requis' },
+      { status: 400 }
+    )
+  }
 
   const intervention = await prisma.intervention.create({
     data: {

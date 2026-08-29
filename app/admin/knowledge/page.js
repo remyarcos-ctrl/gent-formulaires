@@ -95,9 +95,9 @@ export default function KnowledgePage() {
   const progressPct = progress.total > 0 ? Math.round((progress.complete / progress.total) * 100) : 0
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
+    <div className="flex-1 min-h-0 flex flex-col bg-gray-950">
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+      <div className="shrink-0 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3">
           <Link href="/admin" className="text-gray-400 hover:text-white transition-colors text-sm">
             ← Admin
@@ -137,7 +137,7 @@ export default function KnowledgePage() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto pb-36 max-w-3xl mx-auto w-full px-4 pt-4 space-y-4">
+      <div className="app-scroll max-w-3xl mx-auto w-full px-4 pt-4 space-y-4">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role === 'assistant' && (
@@ -181,8 +181,8 @@ export default function KnowledgePage() {
       </div>
 
       {/* Input */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-950 border-t border-gray-800 max-w-3xl mx-auto w-full">
-        <div className="flex gap-2 p-4">
+      <div className="app-bar bg-gray-950 border-t border-gray-800 max-w-3xl mx-auto w-full">
+        <div className="flex gap-2 px-4 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
           <input
             type="text"
             value={input}

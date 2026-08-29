@@ -137,8 +137,8 @@ export default function ChatAgent({ intervention }) {
   }
 
   return (
-    <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full">
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 pb-40">
+    <div className="flex-1 min-h-0 flex flex-col max-w-2xl mx-auto w-full">
+      <div className="app-scroll p-4 space-y-3">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             {msg.role === 'assistant' && (
@@ -184,7 +184,7 @@ export default function ChatAgent({ intervention }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-950 border-t border-gray-800 p-4 space-y-2 max-w-2xl mx-auto w-full">
+      <div className="app-bar bg-gray-950 border-t border-gray-800 px-4 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] space-y-2 max-w-2xl mx-auto w-full">
         {showPhoto && (
           <PhotoUpload
             interventionId={intervention.id}
@@ -223,7 +223,7 @@ export default function ChatAgent({ intervention }) {
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && sendMessage(input)}
             placeholder="Votre réponse..."
-            className="input flex-1"
+            className="input flex-1 text-base"
             disabled={loading}
           />
           <button

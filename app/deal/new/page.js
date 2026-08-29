@@ -71,8 +71,8 @@ export default function NewDealPage() {
   )
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
-      <div className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+    <div className="app-shell bg-gray-950">
+      <div className="shrink-0 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-sky-600 rounded-xl flex items-center justify-center text-sm font-bold text-white">HC</div>
           <div>

@@ -40,13 +40,13 @@ export default function DealDetailPage({ params }) {
   }
 
   if (!deal) return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center text-gray-400">
+    <div className="min-h-full bg-gray-950 flex items-center justify-center text-gray-400">
       Chargement...
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-full bg-gray-950 text-white">
       <div className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center gap-3">
         <button onClick={() => router.push('/admin/deals')} className="text-gray-400 hover:text-white mr-1">←</button>
         <div className="w-9 h-9 bg-sky-600 rounded-xl flex items-center justify-center font-bold text-sm">HC</div>

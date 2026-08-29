@@ -17,7 +17,7 @@ export default async function AdminDealsPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-full bg-gray-950 text-white">
       <div className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-sky-600 rounded-xl flex items-center justify-center font-bold text-sm">HC</div>

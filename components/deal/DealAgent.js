@@ -84,8 +84,8 @@ export default function DealAgent({ dealId, onComplete, savedMessages = [] }) {
   }, [completed])
 
   return (
-    <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full">
-      <div className="flex-1 overflow-y-auto px-4 py-5 space-y-5 pb-52">
+    <div className="flex-1 min-h-0 flex flex-col max-w-2xl mx-auto w-full">
+      <div className="app-scroll px-4 py-5 space-y-5">
         {messages.map((msg, i) => {
           const { text } = parseResponse(msg.content)
           return msg.role === 'assistant' ? (
@@ -122,7 +122,7 @@ export default function DealAgent({ dealId, onComplete, savedMessages = [] }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-950 border-t border-gray-800 max-w-2xl mx-auto w-full">
+      <div className="app-bar bg-gray-950 border-t border-gray-800 max-w-2xl mx-auto w-full">
         {choices.length > 0 && !isLoading && (
           <div className="px-4 pt-4 pb-2 space-y-2">
             {choices.map((choice, i) => (
@@ -146,7 +146,7 @@ export default function DealAgent({ dealId, onComplete, savedMessages = [] }) {
             </div>
           </div>
         )}
-        <div className="flex gap-2 p-4">
+        <div className="flex gap-2 px-4 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
           <input
             type="text"
             value={input}

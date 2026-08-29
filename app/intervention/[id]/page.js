@@ -18,8 +18,8 @@ export default async function InterventionPage({ params }) {
   if (!intervention) notFound()
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
-      <div className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center gap-3">
+    <div className="app-shell bg-gray-950">
+      <div className="shrink-0 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center gap-3">
         <div className="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center text-sm font-bold text-white">HC</div>
         <div>
           <div className="font-semibold text-white text-sm">Happy Confort</div>

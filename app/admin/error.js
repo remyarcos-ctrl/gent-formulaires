@@ -4,7 +4,7 @@ export default function AdminError({ error, reset }) {
   const isDbError = error?.message?.includes('DATABASE_URL') || error?.message?.includes('PrismaClient')
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+    <div className="min-h-full bg-gray-950 flex items-center justify-center p-4">
       <div className="text-center space-y-4 max-w-md">
         <div className="text-4xl">{isDbError ? '🗄️' : '⚠️'}</div>
         <h2 className="text-xl font-bold text-white">

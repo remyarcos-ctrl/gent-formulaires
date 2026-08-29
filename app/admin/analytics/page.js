@@ -49,7 +49,7 @@ function FilterButton({ active, onClick, children }) {
 // Spinner de chargement
 function Spinner() {
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-4 text-gray-400">
+    <div className="min-h-full bg-gray-950 flex flex-col items-center justify-center gap-4 text-gray-400">
       <div className="w-10 h-10 border-2 border-gray-700 border-t-sky-500 rounded-full animate-spin" />
       <p className="text-sm">Chargement des analytics...</p>
     </div>
@@ -59,7 +59,7 @@ function Spinner() {
 // Message d'erreur avec bouton réessayer
 function ErrorState({ onRetry }) {
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center gap-4 text-gray-400">
+    <div className="min-h-full bg-gray-950 flex flex-col items-center justify-center gap-4 text-gray-400">
       <p className="text-lg text-white">Impossible de charger les données</p>
       <p className="text-sm">Une erreur s'est produite lors de la récupération des analytics.</p>
       <button
@@ -169,7 +169,7 @@ export default function AnalyticsPage() {
   const { kpis, weeksData, monthlyData, statutsData, produitsData, commerciauxData, techData } = filteredData
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-full bg-gray-950 text-white">
 
       {/* En-tête — style identique aux autres pages admin */}
       <div className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">

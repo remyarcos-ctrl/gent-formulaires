@@ -49,6 +49,34 @@
 }
 
 @layer components {
+  /* Coquille plein écran mobile-safe.
+     100vh = viewport "large" sur mobile (barre d'URL masquée) : la page dépasse
+     la zone réellement visible et son bas devient inatteignable. 100dvh suit le
+     viewport visible. La règle 100vh reste en repli pour les vieux navigateurs. */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+  /* Zone de contenu scrollable d'une .app-shell */
+  .app-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Barre basse (saisie, choix, signatures) : plus de position:fixed, donc plus
+     de contenu masqué dessous ni de barre cachée par la barre du navigateur.
+     Elle scrolle elle-même si elle devient trop haute. */
+  .app-bar {
+    flex: 0 0 auto;
+    max-height: 60vh;
+    max-height: 60dvh;
+    overflow-y: auto;
+  }
   .card {
     @apply bg-gray-900 border border-gray-800 rounded-xl p-4;
   }

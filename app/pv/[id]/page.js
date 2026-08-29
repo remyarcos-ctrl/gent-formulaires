@@ -22,7 +22,7 @@ export default async function PvPage({ params }) {
   const deal = pv.deal
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
+    <div className="app-shell bg-gray-950 print:block print:h-auto print:overflow-visible">
       {/* Print-only PV document */}
       <div className="hidden print:block p-8 bg-white text-black font-sans max-w-2xl mx-auto w-full">
         <div className="flex items-center justify-between mb-8 border-b-2 border-gray-800 pb-4">
@@ -89,7 +89,7 @@ export default async function PvPage({ params }) {
       </div>
 
       {/* App UI - hidden when printing */}
-      <div className="print:hidden flex-1 flex flex-col">
+      <div className="print:hidden flex-1 min-h-0 flex flex-col">
         <PvAgent pv={pv} />
       </div>
     </div>

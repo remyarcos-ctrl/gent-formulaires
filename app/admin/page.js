@@ -11,8 +11,8 @@ export default function AdminPage() {
   if (!auth || auth.value !== 'authenticated') redirect('/admin/login')
 
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
-      <div className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+    <div className="flex-1 min-h-0 flex flex-col bg-gray-950">
+      <div className="shrink-0 bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-sky-600 rounded-xl flex items-center justify-center text-sm font-bold text-white">HC</div>
           <div>

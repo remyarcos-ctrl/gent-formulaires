@@ -51,8 +51,8 @@ export default function CreateInterventionModal() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md p-6 shadow-2xl">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md p-6 shadow-2xl my-auto max-h-[90dvh] overflow-y-auto">
             {createdLink ? (
               <div className="text-center space-y-4">
                 <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto text-2xl">✓</div>
